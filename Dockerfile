@@ -34,20 +34,9 @@ COPY --from=stage_0 "/usr/lib/libgfortran.so.3.0.0" "/usr/lib/libgfortran.so.3"
 COPY --from=stage_0 "/usr/lib/libquadmath.so.0.0.0" "/usr/lib/libquadmath.so.0"
 COPY --from=stage_0 "/usr/lib/libsnappy.so.1.3.1" "/usr/lib/libsnappy.so.1"
 COPY --from=stage_0 /usr/local/bin/celery /usr/local/bin/flower /usr/local/bin/cython /usr/local/bin/gunicorn /usr/local/bin/pyjwt /usr/local/bin/
-RUN apk add --no-cache --virtual .build-deps \
-  py3-psycopg2 \
-    && find /usr/local \
-        \( -type d -a -name test -o -name tests \) \
-        -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
-        -exec rm -rf '{}' + \
-    && runDeps="$( \
-        scanelf --needed --nobanner --recursive /usr/local \
-                | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-                | sort -u \
-                | xargs -r apk info --installed \
-                | sort -u \
-    )" \
-    && apk add --virtual .rundeps $runDeps tzdata tini \
-    && apk del .build-deps
+RUN apk add --no-cache py3-psycopg2 tzdata tini \
+    && cp -R /usr/lib/python3.6/site-packages/psycopg2/ /usr/local/lib/python3.6/site-packages/ && \
+    cp usr/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info usr/local/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info && rm usr/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info \
+    && rm -r /usr/lib/python3.6/site-packages/psycopg2/
 
 CMD ["python"]
