@@ -1,7 +1,7 @@
 setuptools==40.0.0
 Logbook==0.12.5
 click==6.7
-requests==2.19.1
+requests==2.20.0
 
 
 
