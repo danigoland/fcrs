@@ -34,9 +34,12 @@ COPY --from=stage_0 "/usr/lib/libgfortran.so.3.0.0" "/usr/lib/libgfortran.so.3"
 COPY --from=stage_0 "/usr/lib/libquadmath.so.0.0.0" "/usr/lib/libquadmath.so.0"
 COPY --from=stage_0 "/usr/lib/libsnappy.so.1.3.1" "/usr/lib/libsnappy.so.1"
 COPY --from=stage_0 /usr/local/bin/celery /usr/local/bin/flower /usr/local/bin/cython /usr/local/bin/gunicorn /usr/local/bin/pyjwt /usr/local/bin/
-RUN apk add --no-cache py3-psycopg2 tzdata tini \
+RUN apk add --no-cache py3-psycopg2 tzdata tini py3-psutil \
     && cp -R /usr/lib/python3.6/site-packages/psycopg2/ /usr/local/lib/python3.6/site-packages/ && \
     cp usr/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info usr/local/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info && rm usr/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info \
-    && rm -r /usr/lib/python3.6/site-packages/psycopg2/
+    && rm -r /usr/lib/python3.6/site-packages/psycopg2/ \
+    && cp -R /usr/lib/python3.6/site-packages/psutil/ /usr/local/lib/python3.6/site-packages/ && \
+    cp usr/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info usr/local/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info && rm usr/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info \
+    && rm -r /usr/lib/python3.6/site-packages/psutil/
 
 CMD ["python"]
