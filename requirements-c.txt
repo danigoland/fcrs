@@ -8,3 +8,4 @@ llvmlite==0.26.0
 fastparquet==0.1.5
 python-snappy==0.5.3
 cffi==1.11.5
+docusign-esign==1.0.3
