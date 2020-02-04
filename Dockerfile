@@ -4,11 +4,12 @@ MAINTAINER Dani Goland <glossman@gmail.com>
 
 COPY requirements.txt requirements.txt
 COPY requirements-c.txt requirements-c.txt
+COPY pip_installer.sh pip_installer.sh
 
 RUN apk add --no-cache --virtual .build-deps \
   build-base postgresql-dev libffi-dev unzip openblas-dev freetype-dev pkgconfig gfortran snappy g++ snappy-dev libedit-dev libxslt-dev \
   && ln -s /usr/include/locale.h /usr/include/xlocale.h
-RUN pip install --no-cache-dir -r requirements-c.txt
+RUN ./pip_installer.sh requirements-c.txt
 RUN pip install --no-cache-dir -r requirements.txt
 RUN find /usr/local \
         \( -type d -a -name test -o -name tests \) \
@@ -25,7 +26,7 @@ RUN find /usr/local \
     && apk del .build-deps && rm requirements.txt && rm requirements-c.txt
 
 
-FROM python:3.6-alpine
+FROM python:3.6-alpine3.8
 COPY --from=stage_0 /usr/local/lib/python3.6/site-packages /usr/local/lib/python3.6/site-packages
 COPY --from=stage_0 /usr/lib/libLLVM-6.0.so /usr/lib/libLLVM-6.0.so
 COPY --from=stage_0 "/usr/lib/libstdc++.so.6.0.22" "/usr/lib/libstdc++.so.6"
@@ -42,10 +43,10 @@ COPY --from=stage_0 "/usr/lib/libgpg-error.so.0" "/usr/lib/libgpg-error.so.0"
 COPY --from=stage_0 /usr/local/bin/celery /usr/local/bin/flower /usr/local/bin/cython /usr/local/bin/gunicorn /usr/local/bin/pyjwt /usr/local/bin/
 RUN apk add --no-cache py3-psycopg2 tzdata tini py3-psutil \
     && cp -R /usr/lib/python3.6/site-packages/psycopg2/ /usr/local/lib/python3.6/site-packages/ && \
-    cp usr/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info usr/local/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info && rm usr/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info \
+    cp -R usr/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info usr/local/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info && rm -r usr/lib/python3.6/site-packages/psycopg2-2.7.5-py3.6.egg-info \
     && rm -r /usr/lib/python3.6/site-packages/psycopg2/ \
     && cp -R /usr/lib/python3.6/site-packages/psutil/ /usr/local/lib/python3.6/site-packages/ && \
-    cp usr/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info usr/local/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info && rm usr/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info \
+    cp -R usr/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info usr/local/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info && rm -r usr/lib/python3.6/site-packages/psutil-5.4.6-py3.6.egg-info \
     && rm -r /usr/lib/python3.6/site-packages/psutil/
 
 CMD ["python"]
