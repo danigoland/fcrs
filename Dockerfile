@@ -7,7 +7,7 @@ COPY requirements-c.txt requirements-c.txt
 COPY pip_installer.sh pip_installer.sh
 
 RUN apk add --no-cache --virtual .build-deps \
-  build-base postgresql-dev libffi-dev unzip openblas-dev freetype-dev pkgconfig gfortran snappy g++ snappy-dev libedit-dev libxslt-dev \
+  build-base postgresql-dev libffi-dev unzip openblas-dev freetype-dev pkgconfig gfortran snappy g++ snappy-dev libedit-dev libxslt-dev linux-headers \
   && ln -s /usr/include/locale.h /usr/include/xlocale.h
 RUN ./pip_installer.sh requirements-c.txt
 RUN pip install --no-cache-dir -r requirements.txt
