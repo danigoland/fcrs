@@ -23,7 +23,7 @@ gunicorn==19.9.0
 
 
 celery==4.2.1
-flower==0.9.3
+flower==1.2.0
 tornado>=4.2.0,<6.0.0
 
 Flask==1.0.2
